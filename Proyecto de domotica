@@ -1,0 +1,264 @@
+
+#include <Servo.h>
+Servo servosg90;
+int angulo=0;
+int piezo=0;
+int sensor_luz=0;
+int led_garaje=13; //1
+int buzzer=8;
+int servo=6;//19
+int parar=0;
+int potenciometro=0;
+int temporizador=0;
+int pulsador1=0;
+int pin_pulsador1=3;//24
+int pulsador2=0;
+int pin_pulsador2=5;//20
+int led_cocina=4;//22
+int led1 = 11; //5
+int led2 = 10;//7
+int led3 = 12; //3         
+int microfono = 2; //es el rango de los sonidos que coge
+int valor;
+int estado;
+int Do=262;
+int Re=294;
+int Mi=330;
+int Fa=349;
+int Sol=392;
+int La=440;
+int Si=494;
+int Do5=523;
+int circuito=1;
+void setup() {
+  servosg90.attach(servo);
+  pinMode(led_garaje,OUTPUT);
+  pinMode(pin_pulsador1, INPUT);
+  pinMode(pin_pulsador2, INPUT);
+  pinMode(led_cocina, OUTPUT);
+  pinMode(led1, OUTPUT);
+  pinMode(led2,OUTPUT);
+  pinMode(led3,OUTPUT);
+  pinMode(microfono,INPUT);
+  pinMode(buzzer,OUTPUT);
+  Serial.begin(115200);
+}
+
+void loop() {
+  //garaje
+  piezo=analogRead(A4);
+  sensor_luz=analogRead(A0); //5
+
+  //cocina
+  potenciometro=analogRead(A2);//12
+  temporizador=map(potenciometro,0,1023,0,10);
+  pulsador1=digitalRead(pin_pulsador1);
+  pulsador2=digitalRead(pin_pulsador2);
+
+  //lampara
+  valor=digitalRead(microfono);
+  digitalWrite(led1,LOW); 
+  digitalWrite(led2,LOW); 
+  digitalWrite(led3,LOW); 
+
+
+
+//garaje
+if(circuito==1)
+{
+       
+        if(piezo>=1000)
+       {
+     
+        angulo=0;
+        digitalWrite(led_garaje,HIGH);
+        servosg90.write(angulo);
+        parar=0;
+        }
+        if(sensor_luz<30)
+        {
+         angulo=90;
+         servosg90.write(angulo);
+         digitalWrite(led_garaje,LOW);
+           while(parar<=6)
+           {
+           tone(buzzer,Do5,125);
+           delay(125);
+           tone(buzzer,Si,125);
+           delay(125);
+           noTone(buzzer);
+          parar+=1;
+          
+           }
+       circuito=2; 
+         }
+}
+ //cocina
+if(circuito==2)
+{
+         if(pulsador1==1)
+          {
+           
+          while(temporizador>0)
+            {
+              Serial.print("segundos");
+              Serial.println(temporizador);
+              delay(1000);
+              temporizador+=-1;
+            }
+           Serial.print("segundos");
+           Serial.println(temporizador);
+           if(temporizador==0)
+            {
+              tone(buzzer,Do5);
+            }
+          while(pulsador2==0)
+            {
+              digitalWrite(led_cocina,HIGH);
+              delay(100);
+              digitalWrite(led_cocina,LOW);
+              delay(100);
+              pulsador2=digitalRead(pin_pulsador2); 
+              if(pulsador2==1)
+               {
+                break;
+               } 
+            }
+          if(pulsador2==1)
+            {
+              digitalWrite(led_cocina,LOW);
+              noTone(buzzer);
+                circuito=3;
+            } 
+          }
+
+}
+
+ //lampara
+ 
+ if(circuito==3)
+ {
+  valor=digitalRead(microfono);
+   if(valor == HIGH){
+      digitalWrite(led1, HIGH); //Se enciende el LED 1
+        tone(buzzer,Do,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led1, LOW);
+      delay(50);
+      digitalWrite(led2, HIGH); //Se enciende el LED 2
+         tone(buzzer,Do,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led2, LOW);
+      delay(50);
+      digitalWrite(led3, HIGH); //Se enciende el LED 3
+         tone(buzzer,Sol,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led3, LOW);
+      delay(50);
+      digitalWrite(led1, HIGH); //Se enciende el LED 1
+        tone(buzzer,Sol,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led1, LOW);
+      delay(50);
+      digitalWrite(led2, HIGH); //Se enciende el LED 2
+         tone(buzzer,La,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led2, LOW);
+      delay(50);
+      digitalWrite(led3, HIGH); //Se enciende el LED 3
+         tone(buzzer,La,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led3, LOW);
+      delay(50);
+      digitalWrite(led1, HIGH); //Se enciende el LED 1
+        tone(buzzer,Sol,250);
+        delay(250);
+      delay(250);
+      digitalWrite(led1, LOW);
+      delay(50);
+      digitalWrite(led2, HIGH); //Se enciende el LED 2
+         tone(buzzer,Fa,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led2, LOW);
+      delay(50);
+      digitalWrite(led3, HIGH); //Se enciende el LED 3
+         tone(buzzer,Fa,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led3, LOW);
+      delay(50);
+      digitalWrite(led1, HIGH); //Se enciende el LED 1
+        tone(buzzer,Mi,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led1, LOW);
+      delay(50);
+      digitalWrite(led2, HIGH); //Se enciende el LED 2
+         tone(buzzer,Mi,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led2, LOW);
+      delay(50);
+      digitalWrite(led3, HIGH); //Se enciende el LED 3
+         tone(buzzer,Re,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led3, LOW);
+      delay(50);
+      digitalWrite(led1, HIGH); //Se enciende el LED 1
+        tone(buzzer,Re,125);
+        delay(125);
+      delay(125);
+      digitalWrite(led1, LOW);
+      delay(50);
+      digitalWrite(led2, HIGH); //Se enciende el LED 2
+         tone(buzzer,Do,250);
+        delay(250);
+      delay(250);
+      digitalWrite(led2, LOW);
+      delay(50);
+      
+      
+      digitalWrite(led1, HIGH); 
+      digitalWrite(led2, HIGH);
+      digitalWrite(led3, HIGH);
+       tone(buzzer,Sol,125);
+       delay(125);
+       tone(buzzer,Sol,125); 
+       delay(125);
+       tone(buzzer,Fa,125);
+       delay(125);
+       tone(buzzer,Fa,125);
+       delay(125);
+       tone(buzzer,Mi,125);
+       delay(125);
+       tone(buzzer,Do,125);
+       delay(125);
+       tone(buzzer,Re,250);
+       delay(250);
+      delay(1000);
+      delay(1000);
+      delay(1000);
+      digitalWrite(led1, LOW);
+      digitalWrite(led2, LOW);
+      digitalWrite(led3, LOW);
+      delay(50);
+      circuito=1;
+      }
+      else{
+      digitalWrite(led1, LOW); //Se apaga el LED 1
+      digitalWrite(led2, LOW); //Se apaga el LED 2
+      digitalWrite(led3, LOW); //Se apaga el LED 3
+      noTone(buzzer);
+          
+      }
+  
+  }
+}
